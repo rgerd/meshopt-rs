@@ -32,6 +32,41 @@ pub fn generate_vertex_remap<T>(vertices: &[T], indices: Option<&[u32]>) -> (usi
     (vertex_count, remap)
 }
 
+/// Like `generate_vertex_remap`, but with an explicit `vertex_size` for raw byte buffers
+/// where `size_of::<T>()` does not equal the logical vertex stride.
+///
+/// This is useful when vertex data is stored as `&[u8]` with a runtime-determined vertex size.
+pub fn generate_vertex_sized_remap<T>(
+    vertices: &[T],
+    vertex_count: usize,
+    vertex_size: usize,
+    indices: Option<&[u32]>,
+) -> (usize, Vec<u32>) {
+    assert!(vertex_size % mem::size_of::<T>() == 0);
+    let mut remap: Vec<u32> = vec![0; vertex_count];
+    let vertex_count = unsafe {
+        match indices {
+            Some(indices) => ffi::meshopt_generateVertexRemap(
+                remap.as_mut_ptr().cast(),
+                indices.as_ptr().cast(),
+                indices.len(),
+                vertices.as_ptr().cast(),
+                vertex_count,
+                vertex_size,
+            ),
+            None => ffi::meshopt_generateVertexRemap(
+                remap.as_mut_ptr(),
+                std::ptr::null(),
+                vertex_count,
+                vertices.as_ptr().cast(),
+                vertex_count,
+                vertex_size,
+            ),
+        }
+    };
+    (vertex_count, remap)
+}
+
 /// Generates a vertex remap table from multiple vertex streams and an optional index buffer and returns number of unique vertices.
 ///
 /// As a result, all vertices that are binary equivalent map to the same (new) location, with no gaps in the resulting sequence.
@@ -120,6 +155,31 @@ pub fn remap_vertex_buffer<T: Clone + Default>(
             vertices.as_ptr().cast(),
             vertices.len(),
             mem::size_of::<T>(),
+            remap.as_ptr(),
+        );
+    }
+    result
+}
+
+/// Like `remap_vertex_buffer`, but with an explicit `vertex_size` for raw byte buffers
+/// where `size_of::<T>()` does not equal the logical vertex stride.
+///
+/// This is useful when vertex data is stored as `&[u8]` or packed element buffers (`&[u16]`)
+/// with a runtime-determined vertex size.
+pub fn remap_vertex_buffer_sized<T: Clone + Default>(
+    vertices: &[T],
+    vertex_count: usize,
+    vertex_size: usize,
+    remap: &[u32],
+) -> Vec<T> {
+    assert!(vertex_size % mem::size_of::<T>() == 0);
+    let mut result: Vec<T> = vec![T::default(); vertex_count * (vertex_size / mem::size_of::<T>())];
+    unsafe {
+        ffi::meshopt_remapVertexBuffer(
+            result.as_mut_ptr().cast(),
+            vertices.as_ptr().cast(),
+            vertex_count,
+            vertex_size,
             remap.as_ptr(),
         );
     }
