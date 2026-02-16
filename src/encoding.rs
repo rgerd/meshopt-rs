@@ -83,7 +83,7 @@ pub fn encode_vertex_buffer_sized<T>(
     vertex_count: usize,
     vertex_size: usize,
 ) -> Result<Vec<u8>> {
-    assert!(vertex_size % mem::size_of::<T>() == 0);
+    assert!(vertex_size.is_multiple_of(mem::size_of::<T>()));
     let bounds = unsafe { ffi::meshopt_encodeVertexBufferBound(vertex_count, vertex_size) };
     let mut result: Vec<u8> = vec![0; bounds];
     let size = unsafe {

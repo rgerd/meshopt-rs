@@ -161,7 +161,7 @@ impl<'a> VertexDataAdapter<'a> {
         position_offset: usize,
     ) -> Result<VertexDataAdapter<'a>> {
         let vertex_count = data.len() / vertex_stride;
-        if data.len() % vertex_stride != 0 {
+        if !data.len().is_multiple_of(vertex_stride) {
             Err(Error::memory_dynamic(format!(
                 "vertex data length ({}) must be evenly divisible by vertex_stride ({})",
                 data.len(),

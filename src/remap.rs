@@ -42,7 +42,7 @@ pub fn generate_vertex_sized_remap<T>(
     vertex_size: usize,
     indices: Option<&[u32]>,
 ) -> (usize, Vec<u32>) {
-    assert!(vertex_size % mem::size_of::<T>() == 0);
+    assert!(vertex_size.is_multiple_of(mem::size_of::<T>()));
     let mut remap: Vec<u32> = vec![0; vertex_count];
     let vertex_count = unsafe {
         match indices {
@@ -172,7 +172,7 @@ pub fn remap_vertex_buffer_sized<T: Clone + Default>(
     vertex_size: usize,
     remap: &[u32],
 ) -> Vec<T> {
-    assert!(vertex_size % mem::size_of::<T>() == 0);
+    assert!(vertex_size.is_multiple_of(mem::size_of::<T>()));
     let mut result: Vec<T> = vec![T::default(); vertex_count * (vertex_size / mem::size_of::<T>())];
     unsafe {
         ffi::meshopt_remapVertexBuffer(
