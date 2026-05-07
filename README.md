@@ -1,5 +1,4 @@
-meshopt
-========
+# meshopt
 
 [![Latest version](https://img.shields.io/crates/v/meshopt.svg)](https://crates.io/crates/meshopt)
 [![Documentation](https://docs.rs/meshopt/badge.svg)](https://docs.rs/meshopt)
@@ -43,8 +42,8 @@ cargo run --release --example demo
 The `encoder` example shows the minimal calls to perform mesh optimization in a typical game engine pipeline, and serializes the mesh into a format that is
 compatible with the WebAssembly loader and THREE.js viewer experiment that exists in the `meshoptimizer` repository.
 
-* https://github.com/zeux/meshoptimizer/blob/master/tools/OptMeshLoader.js
-* https://github.com/zeux/meshoptimizer/blob/master/demo/index.html
+- https://github.com/zeux/meshoptimizer/blob/master/tools/OptMeshLoader.js
+- https://github.com/zeux/meshoptimizer/blob/master/demo/index.html
 
 ```shell
 cargo run --release --example encoder -- --input pirate.obj --output pirate.optmesh
@@ -190,8 +189,8 @@ actual performance.
 
 Licensed under either of
 
-* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
