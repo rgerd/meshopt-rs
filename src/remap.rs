@@ -164,21 +164,28 @@ pub fn remap_vertex_buffer<T: Clone + Default>(
 /// Like `remap_vertex_buffer`, but with an explicit `vertex_size` for raw byte buffers
 /// where `size_of::<T>()` does not equal the logical vertex stride.
 ///
+/// `src_vertex_count` is the number of source vertices to read (and the length of `remap`).
+/// `dst_vertex_count` is the number of unique destination vertices the remap targets — it
+/// must be at least `max(remap)+1`. When the remap is identity (no deduplication), the two
+/// counts are equal.
+///
 /// This is useful when vertex data is stored as `&[u8]` or packed element buffers (`&[u16]`)
 /// with a runtime-determined vertex size.
 pub fn remap_vertex_buffer_sized<T: Clone + Default>(
     vertices: &[T],
-    vertex_count: usize,
+    src_vertex_count: usize,
+    dst_vertex_count: usize,
     vertex_size: usize,
     remap: &[u32],
 ) -> Vec<T> {
     assert!(vertex_size.is_multiple_of(mem::size_of::<T>()));
-    let mut result: Vec<T> = vec![T::default(); vertex_count * (vertex_size / mem::size_of::<T>())];
+    let elements_per_vertex = vertex_size / mem::size_of::<T>();
+    let mut result: Vec<T> = vec![T::default(); dst_vertex_count * elements_per_vertex];
     unsafe {
         ffi::meshopt_remapVertexBuffer(
             result.as_mut_ptr().cast(),
             vertices.as_ptr().cast(),
-            vertex_count,
+            src_vertex_count,
             vertex_size,
             remap.as_ptr(),
         );
