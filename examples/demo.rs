@@ -98,7 +98,7 @@ impl fmt::Debug for Mesh {
 
 impl Mesh {
     fn is_valid(&self) -> bool {
-        if self.indices.len() % 3 != 0 {
+        if !self.indices.len().is_multiple_of(3) {
             return false;
         } else {
             for i in 0..self.indices.len() {
@@ -299,7 +299,7 @@ impl Mesh {
         result
     }
 
-    fn split(&mut self) -> (VertexDataAdapter, &mut [u32]) {
+    fn split(&mut self) -> (VertexDataAdapter<'_>, &mut [u32]) {
         let position_offset = mem::offset_of!(Vertex, p);
         let vertex_stride = size_of::<Vertex>();
         let vertex_data = typed_to_bytes(&self.vertices);
@@ -310,7 +310,7 @@ impl Mesh {
         )
     }
 
-    fn vertex_adapter(&self) -> VertexDataAdapter {
+    fn vertex_adapter(&self) -> VertexDataAdapter<'_> {
         let position_offset = mem::offset_of!(Vertex, p);
         let vertex_stride = size_of::<Vertex>();
         let vertex_data = typed_to_bytes(&self.vertices);

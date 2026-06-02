@@ -3,8 +3,8 @@ use meshopt::{
     PackedVertex, Vertex,
 };
 
-use std::{fs::File, io::Write, path::PathBuf};
 use clap::Parser;
+use std::{fs::File, io::Write, path::PathBuf};
 
 #[derive(Parser, Debug)]
 #[command(name = "meshencoder")]
