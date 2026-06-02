@@ -56,7 +56,7 @@ optional = true
 tobj = "4.0"
 miniz_oxide = "0.8"
 rand = "0.9"
-structopt = "0.3"
+clap = { version = "4", features = ["derive"] }
 
 [features]
 generate_bindings = ["bindgen"]

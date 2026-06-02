@@ -4,21 +4,21 @@ use meshopt::{
 };
 
 use std::{fs::File, io::Write, path::PathBuf};
-use structopt::StructOpt;
+use clap::Parser;
 
-#[derive(StructOpt, Debug)]
-#[structopt(name = "meshencoder")]
+#[derive(Parser, Debug)]
+#[command(name = "meshencoder")]
 struct Options {
     /// Input file
-    #[structopt(short = "i", long = "input", parse(from_os_str))]
+    #[arg(short = 'i', long = "input")]
     input: PathBuf,
 
     /// Output file
-    #[structopt(short = "o", long = "output", parse(from_os_str))]
+    #[arg(short = 'o', long = "output")]
     output: PathBuf,
 
     /// No optimization (just encoding)
-    #[structopt(short = "u", long = "unoptimized")]
+    #[arg(short = 'u', long = "unoptimized")]
     unoptimized: bool,
 }
 
@@ -31,7 +31,7 @@ struct Object {
 
 #[allow(clippy::identity_op)]
 fn main() {
-    let options = Options::from_args();
+    let options = Options::parse();
 
     if options.unoptimized {
         println!("Encoding [unoptimized] {:?}", &options.input);
